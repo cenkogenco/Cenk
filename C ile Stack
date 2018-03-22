@@ -1,0 +1,111 @@
+#include <stdio.h>
+#include <stdlib.h>
+struct dugum
+{
+    int veri;
+    struct dugum* onceki;
+    struct dugum* sonraki;
+}typedef Dugum;
+Dugum *kok;
+Dugum* indexBul()
+{
+    int aranan;
+    printf("Aranan:");
+    scanf("%d",&aranan);
+    Dugum *temp = kok;
+    while(temp!=NULL && temp->veri!=aranan)
+        temp=temp->sonraki;
+    return temp;
+}
+void guncelle()
+{
+    Dugum *temp = indexBul();
+    if(temp)
+    {
+        printf("Yeni Degeri Giriniz:");
+        scanf("%d",&(temp->veri));
+    }
+    else
+        printf("Bulunamadi\n");
+}
+void ara()
+{
+    Dugum *temp = indexBul();
+    if(temp)
+        printf("|0x%x|%d|0x%x|\n",temp->onceki,temp->veri,temp->sonraki);
+    else
+        printf("Bulunamadi\n");
+}
+void sil()
+{
+    Dugum *temp = indexBul();
+    if(temp)
+    {
+        if(temp == kok)
+        {
+            kok = kok->sonraki;
+            if(kok)
+                kok->onceki = NULL;
+        }
+        else if(temp->sonraki==NULL)
+            temp->onceki->sonraki=NULL;
+        else
+        {
+            temp->onceki->sonraki = temp->sonraki;
+            temp->sonraki->onceki = temp->onceki;
+        }
+        free(temp);
+    }
+    else
+        printf("Bulunamadi\n");
+}
+void ekle()
+{
+    Dugum *yeniDugum=(Dugum *)calloc(1,sizeof(Dugum));
+    printf("Eklenecek:");
+    scanf("%d",&(yeniDugum->veri));
+    if(kok == NULL)
+        kok = yeniDugum;
+    else
+    {
+        Dugum *temp = kok;
+        while(temp->sonraki!=NULL)
+            temp = temp->sonraki;
+        temp->sonraki = yeniDugum;
+        yeniDugum->onceki = temp;
+    }
+}
+void listele()
+{
+    Dugum *temp = kok;
+    printf("NULL");
+    while(temp!=NULL)
+    {
+        printf("<->%d",temp->veri);
+        temp = temp->sonraki;
+    }
+    printf("<->NULL\n");
+}
+void menu()
+{
+    int secim = 0;
+    do
+    {
+        listele();
+        printf("1.Ekle\n");
+        printf("2.Sil\n");
+        printf("3.Ara\n");
+        printf("4.GÃ¼ncelle\n");
+        printf("5.Cikis\n");
+        printf("Secim:");scanf("%d",&secim);
+        if(secim == 1)ekle();
+        else if(secim ==2)sil();
+        else if(secim ==3)ara();
+        else if(secim ==4)guncelle();
+    }while(secim != 5);
+}
+int main(int argc, const char * argv[])
+{
+    menu();
+    return 0;
+}
